@@ -42,13 +42,25 @@ public:
 namespace first {
 class Solution : public Runable {
 public:
-    string getName() { return "In-order method"; }
+    string getName() { return "hash method"; }
 
     T_OUT run(CASETYPE &c) {
         return isSameTree(c.i1, c.i2);
     }
 
-    bool isSameTree(TreeNode* p, TreeNode* q) {
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> hash_map;
+        vector<int> res;
+
+        for (int i = 0; i < nums.size(); ++i) {
+            hash_map.insert(nums[i], i);
+        }
+
+        for (int i = 0; i < nums.size(); ++i) {
+            if (hash_map[target - nums[i]] != NULL) {
+                /* find match */
+            }
+        }
     }
 };
 }
