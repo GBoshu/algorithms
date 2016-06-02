@@ -21,13 +21,15 @@
 
 using namespace std;
 
-typedef TreeNode * T_PARAM1;
-typedef bool T_OUT;
+typedef vector<int> T_PARAM1;
+typedef int T_PARAM2;
+typedef vector<int> T_OUT;
 
 struct CaseType {
     T_PARAM1 i1;
-    T_PARAM1 i2;
+    T_PARAM2 i2;
     T_OUT o1;
+    clock_t time_span;
 };
 typedef struct CaseType CASETYPE;
 
@@ -45,7 +47,7 @@ public:
     string getName() { return "hash method"; }
 
     T_OUT run(CASETYPE &c) {
-        return isSameTree(c.i1, c.i2);
+        return twoSum(c.i1, c.i2);
     }
 
     vector<int> twoSum(vector<int>& nums, int target) {
@@ -53,14 +55,29 @@ public:
         vector<int> res;
 
         for (int i = 0; i < nums.size(); ++i) {
-            hash_map.insert(nums[i], i);
+            hash_map.insert(std::make_pair(nums[i], i));
         }
 
-        for (int i = 0; i < nums.size(); ++i) {
-            if (hash_map[target - nums[i]] != NULL) {
-                /* find match */
+        /* no need to search for the last one */
+        for (int i = 0; i < nums.size() - 1; ++i) {
+            auto idx = hash_map.find(target - nums[i]);
+            /* find match */
+            if (idx != hash_map.end()) {
+                /* skip the same one */
+                if (i == idx->second) continue;
+
+                if (i < idx->second) {
+                    res.push_back(i);
+                    res.push_back(idx->second);
+                } else {
+                    res.push_back(idx->second);
+                    res.push_back(i);
+                }
+                break;
             }
         }
+
+        return res;
     }
 };
 }
@@ -71,8 +88,13 @@ class UTbox {
 public:
     bool runCase(Runable &s, CASETYPE &c) {
         T_OUT &expect = c.o1;
+        clock_t start, end;
+        start = clock();
 
         T_OUT out = s.run(c);
+
+        end = clock();
+        c.time_span = end - start;
 
         return isSame(out, expect);
     }
@@ -90,12 +112,9 @@ public:
             cout << "UT for " << s->getName() << endl;
             cout << "--------------------------" << endl;
             for (int i = 0; i != static_cast<int>(cases.size()); ++i) {
-                clock_t start, end;
-                start = clock();
 
                 if (runCase(*s, *(cases[i]))) {
-                    end = clock();
-                    cout << "case " << i << " passed: " << end - start << endl;
+                    cout << "case " << i << " passed: " << (cases[i])->time_span << endl;
                 } else {
                     cout << "case " << i << " failed" << endl;
                 }
@@ -106,8 +125,7 @@ public:
 
 private:
     bool isSame(T_OUT &a, T_OUT &b) {
-        //cout << a << " " << b << endl;
-        return a == b;
+        return (a[0] == b[0] && a[1] == b[1]);
     }
 
 private:
@@ -124,6 +142,20 @@ int main() {
     utbox.addSolution(&s1);
 
     /* case define */
+    CASETYPE case1;
+    case1.i1 = {2, 7, 11, 5};
+    case1.i2 = 9;
+    case1.o1 = {0, 1};
 
+    utbox.addCase(&case1);
+
+    CASETYPE case2;
+    case2.i1 = {3, 2, 4};
+    case2.i2 = 6;
+    case2.o1 = {1, 2};
+
+    utbox.addCase(&case2);
+
+    utbox.runAll();
 }
 
