@@ -4,6 +4,7 @@
  *      tag: [hash]
  *      level: [easy]
  *      file: 1_twoSum.cpp
+ *      complie: g++ -std=c++11
  */
 #include <iostream>
 #include <vector>
@@ -44,7 +45,7 @@ public:
 namespace first {
 class Solution : public Runable {
 public:
-    string getName() { return "hash method"; }
+    string getName() { return "my stupid method"; }
 
     T_OUT run(CASETYPE &c) {
         return twoSum(c.i1, c.i2);
@@ -82,6 +83,35 @@ public:
 };
 }
 
+/*************************************************************************/
+namespace second {
+class Solution : public Runable {
+public:
+    string getName() { return "hash method"; }
+
+    T_OUT run(CASETYPE &c) {
+        return twoSum(c.i1, c.i2);
+    }
+
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> hash_map;
+        vector<int> res;
+
+        for (int i = 0; i < nums.size(); ++i) {
+            auto idx = hash_map.find(target - nums[i]);
+            if (idx != hash_map.end()) {
+                res.push_back(idx->second);
+                res.push_back(i);
+                break;
+            }
+
+            hash_map.insert(std::make_pair(nums[i], i));
+        }
+
+        return res;
+    }
+};
+}
 /*************************************************************************/
 
 class UTbox {
@@ -139,22 +169,29 @@ int main() {
     UTbox utbox;
 
     first::Solution s1;
-    utbox.addSolution(&s1);
+    //utbox.addSolution(&s1);
+
+    second::Solution s2;
+    utbox.addSolution(&s2);
 
     /* case define */
     CASETYPE case1;
     case1.i1 = {2, 7, 11, 5};
     case1.i2 = 9;
     case1.o1 = {0, 1};
-
     utbox.addCase(&case1);
 
     CASETYPE case2;
     case2.i1 = {3, 2, 4};
     case2.i2 = 6;
     case2.o1 = {1, 2};
-
     utbox.addCase(&case2);
+
+    CASETYPE case3;
+    case3.i1 = {0, 2, 4, 0};
+    case3.i2 = 0;
+    case3.o1 = {0, 3};
+    utbox.addCase(&case3);
 
     utbox.runAll();
 }
