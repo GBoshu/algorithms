@@ -54,12 +54,12 @@ public:
         unordered_set<string> uniq_result;
         vector<vector<int>> res;
 
-        for (int i = 0; i < nums.size(); ++i) {
+        for (int i = 0; i < static_cast<int>(nums.size()); ++i) {
             hash_map.insert(std::make_pair(nums[i], i));
         }
 
-        for (int i = 0; i < nums.size() - 1; ++i) {
-            for (int j = i + 1; j < nums.size(); ++j) {
+        for (int i = 0; i < static_cast<int>(nums.size() - 1); ++i) {
+            for (int j = i + 1; j < static_cast<int>(nums.size()); ++j) {
                 int target = -(nums[i] + nums[j]);
                 auto idx = hash_map.find(target);
 
@@ -96,7 +96,7 @@ public:
                     strRes.append(to_string(tmp_result[2]));
 
                     if (uniq_result.find(strRes) == uniq_result.end()) {
-                        cout << strRes << endl;
+                        //cout << strRes << endl;
                         uniq_result.insert(strRes);
                         res.push_back(tmp_result);
                     }
@@ -201,6 +201,12 @@ int main() {
     case1.i1 = {-1, 0, 1, 2, -1, -4};
     case1.o1 = {{-1, 0, 1}, {-1, -1, 2}};
     utbox.addCase(&case1);
+
+    /* case define */
+    CASETYPE case2;
+    case2.i1 = {};
+    case2.o1 = {};
+    utbox.addCase(&case2);
 
     utbox.runAll();
 }
