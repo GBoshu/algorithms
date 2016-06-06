@@ -40,6 +40,7 @@ public:
 
 /*************************************************************************/
 
+/* This solution got a "Time Limit Exceeded" when the input is very long. */
 namespace first {
 class Solution : public Runable {
 public:
@@ -111,6 +112,50 @@ public:
 
 /*************************************************************************/
 
+/* sort the input first to avoid duplicate result */
+namespace second {
+class Solution : public Runable {
+public:
+    string getName() { return "my second method"; }
+
+    T_OUT run(CASETYPE &c) {
+        return threeSum(c.i1);
+    }
+
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+
+        sort(nums.begin(), nums.end());
+
+        for (int i = 0; i < static_cast<int>(nums.size() - 2); ++i) {
+            /* skip the same value */
+            if (i - 1 >= 0 && nums[i-1] == nums[i]) continue;
+
+            unordered_set<int> hash_set;
+            
+            for (int j = i + 2; j < static_cast<int>(nums.size()); ++j) {
+
+                /* skip the same value */
+                if (hash_set.find(nums[j-1]) != hash_set.end()) continue;
+
+                hash_set.insert(nums[j-1]);
+
+                int target = -(nums[i] + nums[j]);
+                auto idx = hash_set.find(target);
+                /* match */
+                if (idx != hash_set.end()) {
+                    vector<int> tmp_result = {nums[i], target, nums[j]};
+                    res.push_back(tmp_result);
+                }
+            }
+        }
+
+        return res;
+    }
+};
+}
+/*************************************************************************/
+
 class UTbox {
 public:
     bool runCase(Runable &s, CASETYPE &c) {
@@ -158,7 +203,7 @@ private:
 
         for (auto it = a.begin(); it != a.end(); ++it) {
             hash_set.insert(vec2str(*it));
-            //cout << vec2str(*it) << endl;
+            cout << vec2str(*it) << endl;
         }
 
         for (auto it = b.begin(); it != b.end(); ++it) {
@@ -196,6 +241,9 @@ int main() {
     first::Solution s1;
     utbox.addSolution(&s1);
 
+    second::Solution s2;
+    utbox.addSolution(&s2);
+
     /* case define */
     CASETYPE case1;
     case1.i1 = {-1, 0, 1, 2, -1, -4};
@@ -207,6 +255,12 @@ int main() {
     case2.i1 = {};
     case2.o1 = {};
     utbox.addCase(&case2);
+
+    /* case define */
+    CASETYPE case3;
+    case3.i1 = {-1,0,1,0};
+    case3.o1 = {{-1,0,1}};
+    utbox.addCase(&case3);
 
     utbox.runAll();
 }
