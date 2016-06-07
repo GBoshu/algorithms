@@ -122,7 +122,7 @@ public:
         return threeSum(c.i1);
     }
 
-    vector<vector<int>> threeSum(vector<int>& nums) {
+   vector<vector<int>> threeSum(vector<int>& nums) {
         vector<vector<int>> res;
 
         sort(nums.begin(), nums.end());
@@ -132,26 +132,28 @@ public:
             if (i - 1 >= 0 && nums[i-1] == nums[i]) continue;
 
             unordered_set<int> hash_set;
-            
+            unordered_set<int> target_set;
+
             for (int j = i + 2; j < static_cast<int>(nums.size()); ++j) {
+                int target = -(nums[i] + nums[j]);
+                if (target_set.find(target) != target_set.end()) continue;
 
-                /* skip the same value */
-                if (hash_set.find(nums[j-1]) != hash_set.end()) continue;
-
+                
                 hash_set.insert(nums[j-1]);
 
-                int target = -(nums[i] + nums[j]);
                 auto idx = hash_set.find(target);
                 /* match */
                 if (idx != hash_set.end()) {
                     vector<int> tmp_result = {nums[i], target, nums[j]};
+                    target_set.insert(target);
                     res.push_back(tmp_result);
                 }
             }
         }
 
         return res;
-    }
+    } 
+
 };
 }
 /*************************************************************************/
@@ -203,7 +205,7 @@ private:
 
         for (auto it = a.begin(); it != a.end(); ++it) {
             hash_set.insert(vec2str(*it));
-            cout << vec2str(*it) << endl;
+            //cout << vec2str(*it) << endl;
         }
 
         for (auto it = b.begin(); it != b.end(); ++it) {
