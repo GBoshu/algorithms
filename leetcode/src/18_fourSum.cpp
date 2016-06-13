@@ -53,16 +53,25 @@ public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
         vector<vector<int>> res;
         sort(nums.begin(), nums.end());
+        int size = static_cast<int>(nums.size());
 
-        for (int i = 0; i < static_cast<int>(nums.size()) - 3; ++i) {
+        for (int i = 0; i < size - 3; ++i) {
             if (i != 0 && nums[i - 1] == nums[i]) continue;
 
-            for (int j = i + 1; j < static_cast<int>(nums.size()) - 2; ++j) {
+            /* If we give a second thought, we will note that it exists some break condition. */
+            /* If the sum of four smallest numbers is bigger than the target, we won't search any more. */
+            if (nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target) break;
+            /* If the sum of four biggest numbers is smaller than the target, we have to start a new round. */
+            if (nums[i] + nums[size - 3] + nums[size - 2] + nums[size - 1] < target) continue;
+
+            for (int j = i + 1; j < size - 2; ++j) {
                 if (j != i + 1 && nums[j - 1] == nums[j]) continue;
+                if (nums[i] + nums[j] + nums[j + 1] + nums[j + 2] > target) break;
+                if (nums[i] + nums[j] + nums[size - 2] + nums[size - 1] < target) continue;
 
                 int sum = target - nums[i] - nums[j];
                 int lo = j + 1;
-                int hi = nums.size() - 1;
+                int hi = size - 1;
 
                 while (lo < hi) {
 
