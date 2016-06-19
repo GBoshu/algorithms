@@ -17,6 +17,7 @@
 #include <unordered_set>
 #include <climits>
 #include <utility>
+#include <stdlib.h>
 
 #include <time.h>
 
@@ -45,44 +46,44 @@ public:
     string getName() { return "my first method"; }
 
     T_OUT run(CASETYPE &c) {
-        return fourSum(c.i1, c.i2);
+        return groupAnagrams(c.i1);
     }
 
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        vector<unordered_set<string>> tmpRes;
+        //vector<unordered_set<string>> tmpRes;
         vector<vector<string>>        res;
-        unordered_map<string>         hash_map;
+        unordered_map<string, int>    hash_map;
         char                          sum[26];
 
+        //cout << "hash_map.size()" << hash_map.size() << endl;
         for (auto it = strs.begin(); it != strs.end(); ++it) {
             memset(sum, 0, 26 * sizeof(char));
 
             for (int i = 0; i < it->size(); ++i) {
-                ++sum[it[i] - 'a'];
+                ++sum[it->at(i) - 'a'];
             }
 
             string key;
             for (int i = 0; i < 26; ++i) {
                 if (sum[i] != 0) {
                     key.push_back(i + 'a');
-                    key.append(itoa(sum[i]));
+                    key.append(to_string(sum[i]));
                 }
             }
 
-            cout << key << endl;
+            //cout << key << endl;
 
             if (hash_map.find(key) == hash_map.end()) {
-                hash_map[key] = hash_map.size();
+                int value = hash_map.size();
+                hash_map[key] = value;
+                //cout << "value:" << hash_map[key] << endl;
             }
 
-            if (tmpRes.size() < hash_map[key] + 1) {
-                tmpRes.push_back(unordered_set<sting>());
+            if (res.size() < hash_map[key] + 1) {
+                res.push_back(vector<string>());
             }
-            tmpRes[hash_map[key]].insert(*it);
-        }
-
-        for (auto it = tmpRes.begin(); it != tmpRes.end(); ++it) {
-            res.push_back(vector<string>(it->begin(), it->end()));
+            res[hash_map[key]].push_back(*it);
+            //cout << *it << endl;
         }
 
         return res;
@@ -136,33 +137,7 @@ private:
     bool isSame(T_OUT &a, T_OUT &b) {
         if (a.size() != b.size()) return false;
 
-        unordered_set<string> hash_set;
-
-        for (auto it = a.begin(); it != a.end(); ++it) {
-            hash_set.insert(vec2str(*it));
-            //cout << vec2str(*it) << endl;
-        }
-
-        for (auto it = b.begin(); it != b.end(); ++it) {
-            auto idx = hash_set.find(vec2str(*it));
-
-            if (idx == hash_set.end()) return false;
-
-            hash_set.erase(idx);
-        }
-
         return true;
-    }
-
-    string vec2str(vector<int> &v) {
-        string res;
-
-        for (auto it = v.begin(); it != v.end(); ++it) {
-            res.append(to_string(*it));
-            res.append(",");
-        }
-
-        return res;
     }
 
 private:
@@ -178,7 +153,10 @@ int main() {
     first::Solution s1;
     utbox.addSolution(&s1);
 
-
+    CaseType case0;
+    case0.i1 = {"eat", "tea", "tan", "ate", "nat", "bat"};
+    case0.o1 = {};
+    utbox.addCase(&case0);
 
     utbox.runAll();
 }
