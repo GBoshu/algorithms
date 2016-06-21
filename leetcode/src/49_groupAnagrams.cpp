@@ -137,8 +137,38 @@ private:
     bool isSame(T_OUT &a, T_OUT &b) {
         if (a.size() != b.size()) return false;
 
+        vector<vector<string>> aVec;
+        vector<vector<string>> bVec;
+
+        for (const auto ai : a) {
+            aVec.push_back(vector<string>(ai.begin(), ai.end()));
+            sort((aVec[aVec.size() - 1]).begin(), (aVec[aVec.size() - 1]).end());
+        }
+
+        for (const auto bi : b) {
+            bVec.push_back(vector<string>(bi.begin(), bi.end()));
+            sort((bVec[bVec.size() - 1]).begin(), (bVec[bVec.size() - 1]).end());
+        }
+
+        sort(aVec.begin(), aVec.end(), cmpStrVec());
+        sort(bVec.begin(), bVec.end(), cmpStrVec());
+
+        for (int i = 0; i != aVec.size(); i++) {
+            for (int j = 0; j != aVec[i].size(); j++) {
+                cout << aVec[i][j] << endl;
+                if ( aVec[i][j].compare(bVec[i][j]) != 0 ) return false;
+            }
+        }
+
         return true;
     }
+
+    struct cmpStrVec {
+        bool operator() (const vector<string> &a, const vector<string> &b) {
+            return a[0].compare(b[0]);
+        }
+    };
+
 
 private:
     vector<Runable *> solutions;
@@ -155,7 +185,7 @@ int main() {
 
     CaseType case0;
     case0.i1 = {"eat", "tea", "tan", "ate", "nat", "bat"};
-    case0.o1 = {};
+    case0.o1 = { {"ate", "eat","tea"}, {"nat","tan"}, {"bat"} };
     utbox.addCase(&case0);
 
     utbox.runAll();
