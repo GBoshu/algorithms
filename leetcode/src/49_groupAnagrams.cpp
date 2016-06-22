@@ -94,6 +94,45 @@ public:
 
 /*************************************************************************/
 
+namespace second {
+class Solution : public Runable {
+public:
+    string getName() { return "good method"; }
+
+    T_OUT run(CASETYPE &c) {
+        return groupAnagrams(c.i1);
+    }
+
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string, unordered_multiset<string>>    hash_map;
+        vector<vector<string>> res;
+
+        for (auto it = strs.begin(); it != strs.end(); ++it) {
+            string key(*it);
+
+            sort(key.begin(), key.end());
+
+            if (hash_map.find(key) == hash_map.end()) {
+                //cout << "Insert new key: " << key << endl;
+                hash_map.insert( make_pair(key, unordered_multiset<string>()) );
+            }
+
+            //cout << key << ":" << *it << endl;
+            hash_map[key].insert(*it);
+        }
+
+        for (const auto strSet : hash_map) {
+            res.push_back(vector<string>(strSet.second.begin(), strSet.second.end()));
+        }
+
+        return res;
+    }
+
+};
+}
+
+/*************************************************************************/
+
 class UTbox {
 public:
     bool runCase(Runable &s, CASETYPE &c) {
@@ -141,12 +180,12 @@ private:
         vector<vector<string>> bVec;
 
         for (const auto ai : a) {
-            aVec.push_back(vector<string>(ai.begin(), ai.end()));
+            aVec.push_back(ai);
             sort((aVec[aVec.size() - 1]).begin(), (aVec[aVec.size() - 1]).end());
         }
 
         for (const auto bi : b) {
-            bVec.push_back(vector<string>(bi.begin(), bi.end()));
+            bVec.push_back(ai);
             sort((bVec[bVec.size() - 1]).begin(), (bVec[bVec.size() - 1]).end());
         }
 
@@ -155,7 +194,7 @@ private:
 
         for (int i = 0; i != aVec.size(); i++) {
             for (int j = 0; j != aVec[i].size(); j++) {
-                cout << aVec[i][j] << endl;
+                cout << aVec[i][j] << ":" << bVec[i][j] << endl;
                 if ( aVec[i][j].compare(bVec[i][j]) != 0 ) return false;
             }
         }
@@ -182,6 +221,9 @@ int main() {
 
     first::Solution s1;
     utbox.addSolution(&s1);
+
+    second::Solution s2;
+    utbox.addSolution(&s2);
 
     CaseType case0;
     case0.i1 = {"eat", "tea", "tan", "ate", "nat", "bat"};
