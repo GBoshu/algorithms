@@ -50,7 +50,6 @@ public:
     }
 
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        //vector<unordered_set<string>> tmpRes;
         vector<vector<string>>        res;
         unordered_map<string, int>    hash_map;
         char                          sum[26];
