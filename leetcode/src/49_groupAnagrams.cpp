@@ -14,6 +14,7 @@
 #include <cstring>
 #include <unordered_map>
 #include <set>
+#include <map>
 #include <unordered_set>
 #include <climits>
 #include <utility>
@@ -156,6 +157,58 @@ public:
 
 };
 }
+
+/*************************************************************************/
+namespace forth {
+class Solution : public Runable {
+public:
+    string getName() { return "my first method"; }
+
+    T_OUT run(CASETYPE &c) {
+        return groupAnagrams(c.i1);
+    }
+
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        vector<vector<string>>        res;
+        map<string, int>              hash_map;
+        char                          sum[26];
+
+        //cout << "hash_map.size()" << hash_map.size() << endl;
+        for (auto it = strs.begin(); it != strs.end(); ++it) {
+            memset(sum, 0, 26 * sizeof(char));
+
+            for (int i = 0; i < it->size(); ++i) {
+                ++sum[it->at(i) - 'a'];
+            }
+
+            string key;
+            for (int i = 0; i < 26; ++i) {
+                if (sum[i] != 0) {
+                    key.push_back(i + 'a');
+                    key.append(to_string(sum[i]));
+                }
+            }
+
+            //cout << key << endl;
+
+            if (hash_map.find(key) == hash_map.end()) {
+                int value = hash_map.size();
+                hash_map[key] = value;
+                //cout << "value:" << hash_map[key] << endl;
+            }
+
+            if (res.size() < hash_map[key] + 1) {
+                res.push_back(vector<string>());
+            }
+            res[hash_map[key]].push_back(*it);
+            //cout << *it << endl;
+        }
+
+        return res;
+    }
+
+};
+}
 /*************************************************************************/
 
 class UTbox {
@@ -252,6 +305,9 @@ int main() {
 
     third::Solution s3;
     utbox.addSolution(&s3);
+
+    forth::Solution s4;
+    utbox.addSolution(&s4);
 
     CaseType case0;
     case0.i1 = {"eat", "tea", "tan", "ate", "nat", "bat"};
