@@ -151,11 +151,80 @@ public:
 
 /*************************************************************************/
 
+namespace second {
+class Solution : public Runable {
+public:
+    string getName() { return "my second method"; }
+
+    T_OUT run(CASETYPE &c) {
+        return longestCommonPrefix(c.i1);
+    }
+
+    string longestCommonPrefix(vector<string>& strs) {
+        string comPrefix("");
+
+        if (strs.size() == 0) return comPrefix;
+
+        comPrefix = strs[0];
+        for (int i = 1; i < strs.size(); i++) {
+            comPrefix = commonPrefix(comPrefix, strs[i]);
+        }
+
+        return comPrefix;
+    }
+
+    string commonPrefix(const string &a, const string &b) {
+        if (b.size() < a.size()) return commonPrefix(b, a);
+
+        string result("");
+        for (int i = 0; i < a.size(); i++) {
+            if (a[i] == b[i]) result.push_back(a[i]);
+            else break;
+        }
+
+        return result;
+    }
+};
+}
+
+/*************************************************************************/
+
+namespace third {
+class Solution : public Runable {
+public:
+    string getName() { return "nice code"; }
+
+    T_OUT run(CASETYPE &c) {
+        return longestCommonPrefix(c.i1);
+    }
+
+    string longestCommonPrefix(vector<string>& strs) {
+        string prefix("");
+
+        for(int idx = 0; strs.size() > 0; prefix += strs[0][idx], idx++)
+            for(int i = 0; i < strs.size(); i++)
+                if(idx >= strs[i].size() ||(i > 0 && strs[i][idx] != strs[i-1][idx]))
+                    return prefix;
+
+        return prefix;
+    }
+
+};
+}
+
+/*************************************************************************/
+
 int main() {
     UTbox utbox;
 
     first::Solution s1;
     utbox.addSolution(&s1);
+
+    second::Solution s2;
+    utbox.addSolution(&s2);
+
+    third::Solution s3;
+    utbox.addSolution(&s3);
 
     /* case define */
     CASETYPE case1;
