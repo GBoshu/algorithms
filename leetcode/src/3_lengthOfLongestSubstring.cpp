@@ -1,7 +1,7 @@
 /*
  *      3. Longest Substring Without Repeating Characters
  *
- *      tag: [hash]
+ *      tag: [string]
  *      level: [medium]
  *      file: 3_lengthOfLongestSubstring.cpp
  *      complie: g++ -std=c++11
@@ -17,16 +17,19 @@
 #include <unordered_set>
 #include <climits>
 #include <utility>
+#include <map>
 
 #include <time.h>
 
 using namespace std;
 
 typedef string T_PARAM1;
+typedef int T_PARAM2;
 typedef int T_OUT;
 
 struct CaseType {
     T_PARAM1 i1;
+    T_PARAM2 i2;
     T_OUT o1;
     clock_t time_span;
 };
@@ -40,50 +43,11 @@ public:
 
 /*************************************************************************/
 
-namespace first {
-class Solution : public Runable {
-public:
-    string getName() { return "my hash method"; }
-
-    T_OUT run(CASETYPE &c) {
-        return lengthOfLongestSubstring(c.i1);
-    }
-
-    int lengthOfLongestSubstring(string s) {
-        unordered_map<char, int> hash_map;
-        int size = s.size();
-
-        if (size < 2) return size;
-
-        int start = 0;
-        int end   = start + 1;
-        int max   = 0;
-
-        hash_map[s[start]] = start;
-        while (end < size) {
-            auto idx = hash_map.find(s[end]);
-            if (idx == hash_map.end()) {
-                hash_map[s[end]] = end;
-            } else {
-                /* This condition is not duplicate char, so we just update the index. */
-                if (idx->second < start) {
-                    idx->second = end;
-                } else {
-                    max = end - start > max? end - start: max;
-                    start = idx->second + 1;
-                    idx->second = end;
-                }
-            }
-            ++end;
-        }
-
-        /* please don't forget this situaion */
-        if (end >= size) max = size - start > max ? size - start: max;
-
-        return max;
-    }
-};
-}
+#ifdef DEBUG
+#define MYDEBUG(x) do { std::cerr << x << endl; } while (0)
+#else
+#define MYDEBUG(x)
+#endif
 
 /*************************************************************************/
 
@@ -126,6 +90,7 @@ public:
         }
     }
 
+
 private:
     bool isSame(T_OUT &a, T_OUT &b) {
         return a == b;
@@ -138,11 +103,112 @@ private:
 
 /*************************************************************************/
 
+namespace first {
+class Solution : public Runable {
+public:
+    string getName() { return "my first method"; }
+
+    T_OUT run(CASETYPE &c) {
+        return lengthOfLongestSubstring(c.i1);
+    }
+
+    int lengthOfLongestSubstring(string s) {
+        int beginning = -1;
+        int maxLen = 0;
+        map<char, int> charTable;
+
+        int i = 0;
+        for (; i < s.size(); i++) {
+            auto idx = charTable.find(s[i]);
+            if (idx != charTable.end() && idx->second >= beginning) {
+                beginning = idx->second;
+            }
+            charTable[s[i]] = i;
+            maxLen = maxLen < i - beginning? i - beginning: maxLen;
+        }
+
+        return maxLen;
+    }
+};
+}
+
+/*************************************************************************/
+
+namespace second {
+class Solution : public Runable {
+public:
+    string getName() { return "my second method"; }
+
+    T_OUT run(CASETYPE &c) {
+        return lengthOfLongestSubstring(c.i1);
+    }
+
+    int lengthOfLongestSubstring(string s) {
+        int beginning = -1;
+        int maxLen = 0;
+        unordered_map<char, int> charTable;
+
+        int i = 0;
+        for (; i < s.size(); i++) {
+            auto idx = charTable.find(s[i]);
+            if (idx != charTable.end() && idx->second >= beginning) {
+                beginning = idx->second;
+            }
+            charTable[s[i]] = i;
+            maxLen = maxLen < i - beginning? i - beginning: maxLen;
+        }
+
+        return maxLen;
+    }
+};
+}
+
+/*************************************************************************/
+
+namespace third {
+class Solution : public Runable {
+public:
+    string getName() { return "my third method"; }
+
+    T_OUT run(CASETYPE &c) {
+        return lengthOfLongestSubstring(c.i1);
+    }
+
+    int lengthOfLongestSubstring(string s) {
+        int beginning = -1;
+        int maxLen = 0;
+        int charTable[256];
+
+        memset(charTable, -1, sizeof(charTable));
+
+        int i = 0;
+        for (; i < s.size(); i++) {
+            int c = static_cast<int>(s[i]);
+            if (charTable[c] != -1 && charTable[c] >= beginning) {
+                beginning = charTable[c];
+            }
+            charTable[c] = i;
+            maxLen = maxLen < i - beginning? i - beginning: maxLen;
+        }
+
+        return maxLen;
+    }
+};
+}
+
+/*************************************************************************/
+
 int main() {
     UTbox utbox;
 
     first::Solution s1;
     utbox.addSolution(&s1);
+
+    second::Solution s2;
+    utbox.addSolution(&s2);
+
+    second::Solution s3;
+    utbox.addSolution(&s3);
 
     /* case define */
     CASETYPE case1;
@@ -166,8 +232,8 @@ int main() {
     utbox.addCase(&case4);
 
     CASETYPE case5;
-    case5.i1 = "au";
-    case5.o1 = 2;
+    case5.i1 = "c";
+    case5.o1 = 1;
     utbox.addCase(&case5);
 
     utbox.runAll();
