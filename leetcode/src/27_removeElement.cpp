@@ -1,7 +1,7 @@
 /*
  *      27. Remove Element
  *
- *      tag: [array]
+ *      tag: [array] [twopointer]
  *      level: [easy]
  *      file: 27_removeElement.cpp
  *      complie: g++ -std=c++11
