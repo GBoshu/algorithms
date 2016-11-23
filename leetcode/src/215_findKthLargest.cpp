@@ -1,7 +1,7 @@
 /*
  *      215. Kth Largest Element in an Array
  *
- *      tag: [heep] [divide and conquer]
+ *      tag: [heap] [divide and conquer]
  *      level: [medium]
  *      file: 215_findKthLargest.cpp
  *      complie: g++ -std=c++11
